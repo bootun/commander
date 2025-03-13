@@ -80,6 +80,7 @@ func main() {
 			break
 		}
 		if strings.Contains(result.Content, "[finish]") {
+			log.Printf("推理模型生成完成, content: %s", result.Content)
 			break
 		}
 		// 打印推理结果
@@ -97,7 +98,7 @@ func main() {
 		}
 
 		var cmdMsg Command
-		if err := json.Unmarshal([]byte(structuredResult.Content), &cmdMsg); err != nil {
+		if err := json.Unmarshal([]byte(TrimCodeBlock(structuredResult.Content)), &cmdMsg); err != nil {
 			log.Printf("解析结构化模型JSON命令时出现了错误: %v, 回答内容: %s", err, structuredResult.Content)
 			PrintWarningMessage("解析结构化模型JSON命令时出现了错误")
 			break
@@ -119,12 +120,13 @@ func main() {
 		}
 
 		var securityMsg SecurityMsg
-		if err := json.Unmarshal([]byte(securityResult.Content), &securityMsg); err != nil {
+		if err := json.Unmarshal([]byte(TrimCodeBlock(securityResult.Content)), &securityMsg); err != nil {
 			log.Fatalf("解析安全模型JSON命令时出现了错误: %v, 回答内容: %s", err, securityResult.Content)
 		}
 		if !securityMsg.Safe {
 			PrintAssistantMessage(fmt.Sprintf("我希望在[%s]目录下执行命令[%v]", userDir, cmdMsg.Command))
-			PrintWarningMessage(fmt.Sprintf("是否允许执行[%s]命令? %s", cmdMsg.Command, securityMsg.Reason))
+			PrintWarningMessage(fmt.Sprintf("是否允许执行[%s]命令?", cmdMsg.Command))
+			PrintTipMessage(securityMsg.Reason)
 			for {
 				res := readInputFromStdin("(y/n):")
 				if res == "y" {
@@ -151,15 +153,16 @@ func main() {
 		}
 		log.Printf("命令[%s]的执行结果: %v", cmdMsg.Command, outputStr)
 		PrintAssistantMessage("正在分析命令执行结果...")
-		chatHistory = append(chatHistory, schema.AssistantMessage(fmt.Sprintf("我执行了%s命令, 结果是%s", cmdMsg.Command, outputStr), []schema.ToolCall{}))
-		round++
 		fmt.Printf("------------------------------------------------------\n")
+		chatHistory = append(chatHistory, schema.AssistantMessage(fmt.Sprintf("我执行了%s命令, 结果是%s", cmdMsg.Command, outputStr), []schema.ToolCall{}))
 		if round >= cfg.MaxRounds {
 			chatHistory = append(chatHistory, schema.SystemMessage("已达到用户设置的最大尝试次数，本次任务已终止"))
 			PrintWarningMessage("已达到最大尝试次数，任务已终止。")
 			log.Printf("达到最大轮次，任务已终止。")
 			break
 		}
+		round++
+
 	}
 	actorResult, err := team.Actor.Generate(ctx, append(chatHistory, schema.SystemMessage("请根据用户的问题以及你进行的操作和结果来回答用户的问题")))
 	if err != nil {
@@ -206,4 +209,16 @@ func PrintAssistantMessage(message string) {
 // PrintWarningMessage 打印警告信息
 func PrintWarningMessage(message string) {
 	fmt.Printf("%s%s%s\n", colorRed, message, colorReset)
+}
+
+// PrintTipMessage 打印提示信息
+func PrintTipMessage(message string) {
+	fmt.Printf("%s%s%s\n", colorYellow, message, colorReset)
+}
+
+func TrimCodeBlock(message string) string {
+	message = strings.TrimPrefix(message, "```json\n")
+	message = strings.TrimPrefix(message, "```JSON\n")
+	message = strings.TrimSuffix(message, "```")
+	return message
 }
