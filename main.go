@@ -59,7 +59,7 @@ func main() {
 		log.Fatalf("模型初始化失败: %v", err)
 	}
 	// 获取用户输入
-	PrintAssistantMessage("有什么我可以帮助你的?")
+	PrintAssistantMessage("有什么我可以帮助你的吗?")
 	userQuestion := readInputFromStdin(fmt.Sprintf("%s>%s ", colorYellow, colorReset))
 
 	// 整合用户问题, 初始化聊天历史
