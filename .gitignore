@@ -3,3 +3,7 @@
 commander
 *.exe
 *.out
+.DS_Store
+config.yaml
+config.yml
+*.log

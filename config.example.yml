@@ -1,0 +1,24 @@
+# 最大轮次
+max_rounds: 10
+
+models:
+  # 推理模型
+  reasoning_model:
+    model_id: "" # 模型ID
+    base_url: ""
+    token: "" # API key
+  # 结构化输出模型
+  structured_model:
+    model_id: ""
+    base_url: ""
+    token: ""
+  # 安全审查模型
+  security_model:
+    model_id: ""
+    base_url: ""
+    token: ""
+  # 回答模型
+  actor_model:
+    model_id: "deepseek-r1"
+    base_url: ""
+    token: ""
