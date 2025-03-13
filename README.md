@@ -6,10 +6,11 @@
 ## 使用方式
 
 ### 配置
-1. 复制 `config.yml` 并填写相关配置信息:
+1. 创建 `config.yml` 并填写相关配置信息(可参考`config.example.yml`文件):
    - `reasoning_model`: 用于理解用户需求和决策的模型
    - `structured_model`: 用于生成结构化输出的模型
    - `security_model`: 用于安全检查的模型
+   - `actor_model`: 用于最终回答的模型
 
 每个模型配置需要包含:
 - `model_id`: 模型ID
