@@ -6,6 +6,7 @@ import (
 
 	"github.com/bootun/commander/config"
 	"github.com/cloudwego/eino-ext/components/model/openai"
+	libOpenai "github.com/cloudwego/eino-ext/libs/acl/openai"
 )
 
 type Team struct {
@@ -29,6 +30,9 @@ func NewTeam(ctx context.Context, cfg *config.Config) (*Team, error) {
 		BaseURL: cfg.Models.StructuredModel.BaseURL,
 		APIKey:  cfg.Models.StructuredModel.Token,
 		Model:   cfg.Models.StructuredModel.ModelID,
+		ResponseFormat: &libOpenai.ChatCompletionResponseFormat{
+			Type: libOpenai.ChatCompletionResponseFormatTypeJSONObject,
+		},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("结构化模型初始化失败: %v", err)
@@ -37,6 +41,9 @@ func NewTeam(ctx context.Context, cfg *config.Config) (*Team, error) {
 		BaseURL: cfg.Models.SecurityModel.BaseURL,
 		APIKey:  cfg.Models.SecurityModel.Token,
 		Model:   cfg.Models.SecurityModel.ModelID,
+		ResponseFormat: &libOpenai.ChatCompletionResponseFormat{
+			Type: libOpenai.ChatCompletionResponseFormatTypeJSONObject,
+		},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("安全模型初始化失败: %v", err)

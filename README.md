@@ -3,6 +3,11 @@
 
 可以帮你执行简单操作的命令行助手
 
+## 效果
+![example1](./example1.png)
+![example2](./example2.png)
+
+
 ## 使用方式
 
 ### 配置
@@ -23,6 +28,4 @@
 2. 通过命令行参数指定: `./commander --config=/path/to/config.yml`
 3. 通过环境变量指定: `COMMANDER_CONFIG=/path/to/config.yml ./commander`
 
-示例代码中使用的是[硅基流动](https://cloud.siliconflow.cn/i/btLLzjLX)的API，现在[注册](https://cloud.siliconflow.cn/i/btLLzjLX)赠送14元额度。
-
-> ⚠️警告: 代码仅作为示例用途，没有加安全校验，请不要试图让AI删除你电脑中的文件。
+> ⚠️警告: 代码仅作为示例用途，使用时请注意操作安全
